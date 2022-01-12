@@ -34,6 +34,10 @@ config :rocketpay, Rocketpay.Mailer, adapter: Swoosh.Adapters.Local
 # Swoosh API client is needed for adapters other than SMTP.
 config :swoosh, :api_client, false
 
+config :rocketpay, :basic_auth,
+  username: "my_secret_username",
+  password: "my_secret_password"
+
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.14.0",
@@ -43,6 +47,8 @@ config :esbuild,
     cd: Path.expand("../assets", __DIR__),
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]
+
+
 
 # Configures Elixir's Logger
 config :logger, :console,
