@@ -1,18 +1,6 @@
 defmodule Telephony do
-  @moduledoc """
-  Documentation for `Telephony`.
-  """
 
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> Telephony.hello()
-      :world
-
-  """
-  def hello do
-    :world
+  def register_subscriber(name, number, cpf) do
+    Subscriber.register(name, number, cpf)
   end
 end
