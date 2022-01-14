@@ -5,7 +5,7 @@ defmodule Telephony do
     File.write("plans/post.txt", :erlang.term_to_binary([]))
   end
 
-  def register_subscriber(name, number, cpf, plan \\ :prepaid) do
+  def register_subscriber(name, number, cpf, plan) do
     Subscriber.register(name, number, cpf, plan)
   end
 end
