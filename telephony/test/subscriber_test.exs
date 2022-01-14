@@ -69,4 +69,13 @@ defmodule SubscriberTest do
     end
   end
 
+  describe "Delete Subscriber" do
+
+    test "Should delete an subscriber" do
+      Subscriber.register("user123", "123", "123", :prepaid)
+
+      assert Subscriber.delete("123") == {:ok, "Subscriber user123 successfully deleted."}
+    end
+  end
+
 end
