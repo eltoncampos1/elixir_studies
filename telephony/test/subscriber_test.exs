@@ -13,24 +13,25 @@ defmodule SubscriberTest do
   end
 
   describe "Create Subscriber Test" do
-
     test "Should be able to create an prepaid account" do
-      assert Subscriber.register("user123", "123", "123", :prepaid) == {:ok, "Subscriber user123 has been successfully registered"}
+      assert Subscriber.register("user123", "123", "123", :prepaid) ==
+               {:ok, "Subscriber user123 has been successfully registered"}
     end
 
     test "Should be return error if user already registered" do
       Subscriber.register("user123", "123", "123", :prepaid)
-      assert Subscriber.register("user123", "123", "123", :prepaid) ==  {:error, "Subscriber with this number already registered"}
+
+      assert Subscriber.register("user123", "123", "123", :prepaid) ==
+               {:error, "Subscriber with this number already registered"}
     end
 
     test "Should be return an Subscriber struct" do
-      assert %Subscriber{name: "user123", number: "123", cpf: "123", plan: :postpaid}.name == "user123"
+      assert %Subscriber{name: "user123", number: "123", cpf: "123", plan: :postpaid}.name ==
+               "user123"
     end
-
   end
 
   describe "Find Subscribers Test" do
-
     test "find postpaid" do
       Subscriber.register("user123", "123", "123", :postpaid)
 
@@ -70,12 +71,10 @@ defmodule SubscriberTest do
   end
 
   describe "Delete Subscriber" do
-
     test "Should delete an subscriber" do
       Subscriber.register("user123", "123", "123", :prepaid)
 
       assert Subscriber.delete("123") == {:ok, "Subscriber user123 successfully deleted."}
     end
   end
-
 end

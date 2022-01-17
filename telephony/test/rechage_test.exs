@@ -1,5 +1,6 @@
 defmodule RechargeTest do
   use ExUnit.Case
+
   setup do
     File.write("plans/pre.txt", :erlang.term_to_binary([]))
     File.write("plans/post.txt", :erlang.term_to_binary([]))
@@ -9,7 +10,6 @@ defmodule RechargeTest do
       File.rm("plans/post.txt")
     end)
   end
-
 
   test "Should make an recharge" do
     sub = Subscriber.register("user123", "123", "123", :prepaid)
