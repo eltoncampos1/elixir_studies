@@ -10,16 +10,24 @@ defmodule Prepaid do
   def make_call(number, date, duration) do
     subscriber = Subscriber.find_subscriber(number, :prepaid)
     cost = @price_per_minute * duration
+
     cond do
       cost <= subscriber.plan.credits ->
-      plan = subscriber.plan
-      plan = %__MODULE__{plan | credits: plan.credits - cost}
-      %Subscriber{subscriber | plan: plan}
+        plan = subscriber.plan
+        plan = %__MODULE__{plan | credits: plan.credits - cost}
 
-      |> Call.register(date, duration)
-        {:ok, "Will be charged the value of #{cost} for the call, you still have #{plan.credits} credits"}
-        true ->
-          {:error, "You don't have enough credits to make the call, please top up"}
+        %Subscriber{subscriber | plan: plan}
+        |> Call.register(date, duration)
+
+        {:ok,
+         "Will be charged the value of #{cost} for the call, you still have #{plan.credits} credits"}
+
+      true ->
+        {:error, "You don't have enough credits to make the call, please top up"}
     end
+  end
+
+  def pint_bill(month, year, number) do
+    Bill.print(month, year, number, :prepaid)
   end
 end
