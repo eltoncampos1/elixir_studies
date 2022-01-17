@@ -5,9 +5,9 @@ defmodule Subscriber do
   the main function is `register/4`
   """
 
-  defstruct name: nil, number: nil, cpf: nil, plan: nil
+  defstruct name: nil, number: nil, cpf: nil, plan: nil, calls: []
 
-  @subscribers%{
+  @subscribers %{
     :prepaid => "plans/pre.txt",
     :postpaid => "plans/post.txt"
   }
@@ -35,14 +35,54 @@ defmodule Subscriber do
     case find_subscriber(number) do
       nil ->
         subscriber = %__MODULE__{name: name, number: number, cpf: cpf, plan: plan}
-        read(get_plan(subscriber)) ++ [subscriber]
-          |> :erlang.term_to_binary()
-          |> write(get_plan(subscriber))
 
-          {:ok, "Subscriber #{name} has been successfully registered"}
-          _subscriber ->
-            {:error, "Subscriber with this number already registered"}
+        (read(get_plan(subscriber)) ++ [subscriber])
+        |> :erlang.term_to_binary()
+        |> write(get_plan(subscriber))
+
+        {:ok, "Subscriber #{name} has been successfully registered"}
+
+      _subscriber ->
+        {:error, "Subscriber with this number already registered"}
     end
+  end
+
+  def delete(number) do
+    {subscriber, new_list} = delete_item(number)
+
+    new_list
+    |> :erlang.term_to_binary()
+    |> write(get_plan(subscriber))
+
+    {:ok, "Subscriber #{subscriber.name} successfully deleted."}
+  end
+
+  def update(number, subscriber) do
+    {old_subscriber, new_list} = delete_item(number)
+
+    case subscriber.plan.__struct__ == old_subscriber.plan.__struct__ do
+      true ->
+        (new_list ++ [subscriber])
+        |> :erlang.term_to_binary()
+        |> write(get_plan(subscriber))
+
+      false ->
+        {:error, "Subscriber can't change the plan"}
+    end
+  end
+
+  def delete_item(number) do
+    subscriber = find_subscriber(number)
+
+    new_list =
+      read(get_plan(subscriber))
+      |> List.delete(subscriber)
+
+    {subscriber, new_list}
+  end
+
+  defp write(subscribers_list, plan) do
+    File.write(@subscribers[plan], subscribers_list)
   end
 
   defp get_plan(subscriber) do
@@ -50,32 +90,17 @@ defmodule Subscriber do
       true -> :prepaid
       false -> :postpaid
     end
-
-  end
-
-  def delete(number) do
-    subscriber = find_subscriber(number)
-
-    result_delete = subscribers()
-      |> List.delete(subscriber)
-      |> :erlang.term_to_binary()
-      |> write(get_plan(subscriber))
-      {result_delete, "Subscriber #{subscriber.name} successfully deleted."}
-  end
-
-  defp write(subscribers_list, plan) do
-    File.write(@subscribers[plan], subscribers_list)
   end
 
   def read(plan) do
     case File.read(@subscribers[plan]) do
-      {:ok, subscribers } ->
+      {:ok, subscribers} ->
         subscribers
-          |> :erlang.binary_to_term
+        |> :erlang.binary_to_term()
+
       {:error, :enoent} ->
         {:error, "Invalid File"}
     end
-
   end
 
   @doc """
@@ -93,9 +118,9 @@ defmodule Subscriber do
       iex> Subscriber.register("user_test2", "4567", "56789", :postpaid)
       {:ok, "Subscriber user_test2 has been successfully registered"}
       iex> Subscriber.find_subscriber("1234")
-      %Subscriber{cpf: "56789", name: "user_test", number: "1234", plan: %Prepaid{credits: 10, recharges: []}}
+      %Subscriber{cpf: "56789", name: "user_test", number: "1234", plan: %Prepaid{credits: 0, recharges: []}}
       iex> Subscriber.find_subscriber("4567")
-      %Subscriber{cpf: "56789", name: "user_test2", number: "4567", plan: %Postpaid{value: nil}}
+      %Subscriber{cpf: "56789", name: "user_test2", number: "4567", plan: %Postpaid{value: 0}}
 
   """
   def find_subscriber(number, key \\ :all), do: find(number, key)
@@ -107,7 +132,7 @@ defmodule Subscriber do
   defp filter(list, number), do: Enum.find(list, &(&1.number == number))
 
   def postpaid_subscribers(), do: read(:postpaid)
-  defp prepaid_subscribers(), do: read(:prepaid)
+  def prepaid_subscribers(), do: read(:prepaid)
 
   def subscribers, do: read(:prepaid) ++ read(:postpaid)
 end
