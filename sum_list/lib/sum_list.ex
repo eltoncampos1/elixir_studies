@@ -3,16 +3,12 @@ defmodule SumList do
   Documentation for `SumList`.
   """
 
-  @doc """
-  Hello world.
+  def call(list), do: sum(list, 0)
 
-  ## Examples
+  defp sum([], acc), do: acc
 
-      iex> SumList.hello()
-      :world
-
-  """
-  def hello do
-    :world
+  defp sum([head | tail], acc) do
+    acc = acc + head
+    sum(tail, acc)
   end
 end
