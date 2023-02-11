@@ -1,22 +1,18 @@
-defmodule Subscriber.SubscriberTest do
-  @moduledoc """
-
-  """
+defmodule Telephony.Core.SubscriberTest do
+  @moduledoc false
   use ExUnit.Case
-  alias Subscriber.Subscriber
+  alias Telephony.Core.Subscriber
 
   test "create subscriber" do
     payload = %{
       full_name: "Jhon",
-      id: "123",
       phone_number: "123"
     }
 
     result = Subscriber.new(payload)
 
-    expect  = %Subscriber{
+    expect = %Subscriber{
       full_name: "Jhon",
-      id: "123",
       phone_number: "123",
       subscriber_type: :prepaid
     }
