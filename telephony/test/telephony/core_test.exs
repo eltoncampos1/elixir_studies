@@ -5,7 +5,6 @@ defmodule Telephony.CoreTest do
   alias Telephony.Core.Subscriber
   alias Telephony.Core.Prepaid
 
-
   setup do
     subscribers = [
       %Subscriber{

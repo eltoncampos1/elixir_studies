@@ -5,8 +5,6 @@ defmodule Telephony.Core.SubscriberTest do
   alias Telephony.Core.Prepaid
   alias Telephony.Core.Postpaid
 
-
-
   test "create prepaid subscriber" do
     payload = %{
       full_name: "Jhon",
@@ -25,13 +23,11 @@ defmodule Telephony.Core.SubscriberTest do
     assert expect == result
   end
 
-
   test "create postpaid subscriber" do
     payload = %{
       full_name: "Jhon",
       phone_number: "123",
       subscriber_type: :postpaid
-
     }
 
     result = Subscriber.new(payload)
