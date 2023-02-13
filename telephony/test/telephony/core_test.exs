@@ -3,13 +3,15 @@ defmodule Telephony.CoreTest do
   use ExUnit.Case
   alias Telephony.Core
   alias Telephony.Core.Subscriber
+  alias Telephony.Core.Prepaid
+
 
   setup do
     subscribers = [
       %Subscriber{
         full_name: "Jhon",
         phone_number: "123",
-        subscriber_type: :prepaid
+        subscriber_type: %Prepaid{credits: 0, recharges: []}
       }
     ]
 
@@ -31,7 +33,7 @@ defmodule Telephony.CoreTest do
       %Subscriber{
         full_name: "Jhon",
         phone_number: "123",
-        subscriber_type: :prepaid
+        subscriber_type: %Prepaid{credits: 0, recharges: []}
       }
     ]
 
@@ -49,12 +51,12 @@ defmodule Telephony.CoreTest do
       %Subscriber{
         full_name: "mary",
         phone_number: "1234",
-        subscriber_type: :prepaid
+        subscriber_type: %Prepaid{credits: 0, recharges: []}
       },
       %Subscriber{
         full_name: "Jhon",
         phone_number: "123",
-        subscriber_type: :prepaid
+        subscriber_type: %Prepaid{credits: 0, recharges: []}
       }
     ]
 
