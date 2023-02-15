@@ -1,7 +1,7 @@
 defmodule Telephony.Core do
   @moduledoc false
   alias __MODULE__.Subscriber
-  @allowed_types [:prepaid, :postpaid]
+  @allowed_types [:prepaid, :pospaid]
 
   def create_subscriber(subscribers, %{subscriber_type: type} = payload)
       when type in @allowed_types do

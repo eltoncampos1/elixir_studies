@@ -3,7 +3,7 @@ defmodule Telephony.Core.SubscriberTest do
   use ExUnit.Case
   alias Telephony.Core.Subscriber
   alias Telephony.Core.Prepaid
-  alias Telephony.Core.Postpaid
+  alias Telephony.Core.Pospaid
 
   test "create prepaid subscriber" do
     payload = %{
@@ -27,7 +27,7 @@ defmodule Telephony.Core.SubscriberTest do
     payload = %{
       full_name: "Jhon",
       phone_number: "123",
-      subscriber_type: :postpaid
+      subscriber_type: :pospaid
     }
 
     result = Subscriber.new(payload)
@@ -35,7 +35,7 @@ defmodule Telephony.Core.SubscriberTest do
     expect = %Subscriber{
       full_name: "Jhon",
       phone_number: "123",
-      subscriber_type: %Postpaid{spent: 0}
+      subscriber_type: %Pospaid{spent: 0}
     }
 
     assert expect == result
