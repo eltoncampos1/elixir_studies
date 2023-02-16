@@ -23,4 +23,10 @@ defmodule Telephony.Core.Subscriber do
     Prepaid.make_call(subscriber, time_spent, date)
   end
 
+  def make_recharge(%{subscriber_type: subscriber_type} = subscriber, value, date)
+  when subscriber_type.__struct__ == Prepaid do
+    Prepaid.make_recharge(subscriber, value, date)
+  end
+
+  def make_recharge(_subscriber, _value, _date), do: {:error, "Only a prepaid can make a recharge"}
 end

@@ -1,7 +1,7 @@
 defmodule Telephony.Core.SubscriberTest do
   @moduledoc false
   use ExUnit.Case
-  alias Telephony.Core.{Call, Prepaid, Pospaid, Subscriber}
+  alias Telephony.Core.{Call, Prepaid, Pospaid, Recharge, Subscriber}
 
   setup do
     pospaid = %Subscriber{
@@ -91,6 +91,33 @@ defmodule Telephony.Core.SubscriberTest do
         }
       ]
     }
+
+    assert expect == result
+  end
+
+  test "make a prepaid recharge", %{prepaid: prepaid} do
+    date = NaiveDateTime.utc_now()
+    value = 20
+
+    result = Subscriber.make_recharge(prepaid, value, date)
+
+    expect = %Subscriber{
+      full_name: "Jhon",
+      phone_number: "123",
+      calls: [],
+      subscriber_type: %Prepaid{credits: 30, recharges: [%Recharge{date: date, value: value}]},
+    }
+
+    assert expect == result
+  end
+
+  test "error when recharge and its not a prepaid", %{pospaid: pospaid} do
+    date = NaiveDateTime.utc_now()
+    value = 20
+
+    result = Subscriber.make_recharge(pospaid, value, date)
+
+    expect = {:error, "Only a prepaid can make a recharge"}
 
     assert expect == result
   end
