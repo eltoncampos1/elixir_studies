@@ -4,7 +4,7 @@ defmodule Telephony.Core.Pospaid do
   alias Telephony.Core.Call
   @price_per_minute 1.04
 
-  def make_call(%{subscriber_type: subscriber_type} = subscriber, time_spent, date) do
+  def make_call(%{subscriber_type: %__MODULE__{}} = subscriber, time_spent, date) do
     subscriber
     |> update_spent(time_spent)
     |> add_call(time_spent, date)
