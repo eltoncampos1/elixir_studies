@@ -105,7 +105,7 @@ defmodule Telephony.Core.SubscriberTest do
       full_name: "Jhon",
       phone_number: "123",
       calls: [],
-      subscriber_type: %Prepaid{credits: 30, recharges: [%Recharge{date: date, value: value}]},
+      subscriber_type: %Prepaid{credits: 30, recharges: [%Recharge{date: date, value: value}]}
     }
 
     assert expect == result

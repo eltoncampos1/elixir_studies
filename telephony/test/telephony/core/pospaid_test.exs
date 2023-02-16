@@ -4,7 +4,7 @@ defmodule Telephony.Core.PospaidTest do
   alias Telephony.Core.Pospaid
   alias Telephony.Core.{Call, Subscriber}
 
-  setup  do
+  setup do
     sub = %Subscriber{
       full_name: "Jhon",
       phone_number: "123",
@@ -19,7 +19,7 @@ defmodule Telephony.Core.PospaidTest do
     test "make a call", %{subscriber: sub} do
       time_spent = 2
       date = NaiveDateTime.utc_now()
-      result  = Pospaid.make_call(sub, time_spent, date)
+      result = Pospaid.make_call(sub, time_spent, date)
 
       expect = %Subscriber{
         full_name: "Jhon",
@@ -35,6 +35,5 @@ defmodule Telephony.Core.PospaidTest do
 
       assert expect == result
     end
-
   end
 end

@@ -14,19 +14,20 @@ defmodule Telephony.Core.Subscriber do
   end
 
   def make_call(%{subscriber_type: subscriber_type} = subscriber, time_spent, date)
-  when subscriber_type.__struct__ == Pospaid do
+      when subscriber_type.__struct__ == Pospaid do
     Pospaid.make_call(subscriber, time_spent, date)
   end
 
   def make_call(%{subscriber_type: subscriber_type} = subscriber, time_spent, date)
-  when subscriber_type.__struct__ == Prepaid do
+      when subscriber_type.__struct__ == Prepaid do
     Prepaid.make_call(subscriber, time_spent, date)
   end
 
   def make_recharge(%{subscriber_type: subscriber_type} = subscriber, value, date)
-  when subscriber_type.__struct__ == Prepaid do
+      when subscriber_type.__struct__ == Prepaid do
     Prepaid.make_recharge(subscriber, value, date)
   end
 
-  def make_recharge(_subscriber, _value, _date), do: {:error, "Only a prepaid can make a recharge"}
+  def make_recharge(_subscriber, _value, _date),
+    do: {:error, "Only a prepaid can make a recharge"}
 end

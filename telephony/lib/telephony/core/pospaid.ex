@@ -15,6 +15,7 @@ defmodule Telephony.Core.Pospaid do
     subscriber_type = %{subscriber_type | spent: subscriber_type.spent + spent}
     %{subscriber | subscriber_type: subscriber_type}
   end
+
   defp add_call(subscriber, time_spent, date) do
     call = Call.new(time_spent, date)
     %{subscriber | calls: subscriber.calls ++ [call]}
