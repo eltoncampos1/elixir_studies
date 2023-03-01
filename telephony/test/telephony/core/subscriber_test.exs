@@ -106,4 +106,18 @@ defmodule Telephony.Core.SubscriberTest do
 
     assert Subscriber.make_call(subscriber, 1, date) == expect
   end
+
+  test "make recharge" do
+    subscriber = %Subscriber{
+      full_name: "Jhon",
+      phone_number: "123",
+      type: %Pospaid{spent: 1.04}
+    }
+
+    date = DateTime.utc_now()
+
+    expect = {:error, "Only a prepaid can make a recharge"}
+
+    assert Subscriber.make_recharge(subscriber, 10, date) == expect
+  end
 end
