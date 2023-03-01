@@ -43,23 +43,28 @@ defmodule Telephony.Core.Prepaid do
   end
 
   defimpl Invoice, for: Telephony.Core.Prepaid do
-  @price_per_minute 1.45
+    @price_per_minute 1.45
 
-    def print(%{recharges: recharges} = _subscriber_type, calls, month, year) do
+    def print(%{recharges: recharges} = subscriber_type, calls, month, year) do
       recharges = Enum.filter(recharges, &(&1.date.year == year and &1.date.month == month))
-      calls = Enum.reduce(calls, [], fn call, acc ->
-        value_spent = call.time_spent * @price_per_minute
-        if call.date.year == year and call.date.month == month do
-          call = %{date: call.date, time_spent: call.time_spent, value_spent: value_spent}
 
-          acc ++ [call]
-        else
-          acc
-        end
-      end)
+      calls =
+        Enum.reduce(calls, [], fn call, acc ->
+          value_spent = call.time_spent * @price_per_minute
+
+          if call.date.year == year and call.date.month == month do
+            call = %{date: call.date, time_spent: call.time_spent, value_spent: value_spent}
+
+            acc ++ [call]
+          else
+            acc
+          end
+        end)
+
       %{
         recharges: recharges,
-        calls: calls
+        calls: calls,
+        credits: subscriber_type.credits
       }
     end
   end

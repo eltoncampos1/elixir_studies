@@ -108,14 +108,15 @@ defmodule Telephony.Core.PrepaidTest do
                  },
                  %{
                    time_spent: 20,
-                    value_spent: 29.0,
+                   value_spent: 29.0,
                    date: date
                  }
                ],
                recharges: [
                  %Recharge{value: value, date: date}
-               ]
+               ],
+               credits: 110
              }
-            end
+    end
   end
 end
