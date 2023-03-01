@@ -2,10 +2,10 @@ defmodule Telephony.Core.PospaidTest do
   @moduledoc false
   use ExUnit.Case
   alias Telephony.Core.Pospaid
-  alias Telephony.Core.{Call, Subscriber}
+  alias Telephony.Core.Call
 
   setup do
-    sub = %Subscriber{
+    sub = %Telephony.Core.Subscriber{
       full_name: "Jhon",
       phone_number: "123",
       subscriber_type: %Pospaid{spent: 0},
@@ -21,7 +21,7 @@ defmodule Telephony.Core.PospaidTest do
       date = NaiveDateTime.utc_now()
       result = Pospaid.make_call(sub, time_spent, date)
 
-      expect = %Subscriber{
+      expect = %Telephony.Core.Subscriber{
         full_name: "Jhon",
         phone_number: "123",
         subscriber_type: %Pospaid{spent: 2.08},
@@ -40,7 +40,7 @@ defmodule Telephony.Core.PospaidTest do
       date = ~D[2023-02-16]
       last_month = ~D[2023-01-16]
 
-      subscriber = %Subscriber{
+      subscriber = %Telephony.Core.Subscriber{
         full_name: "Jhon",
         phone_number: "123",
         subscriber_type: %Pospaid{spent: 90 * 1.04},
@@ -78,7 +78,7 @@ defmodule Telephony.Core.PospaidTest do
         ]
       }
 
-      assert expect === Invoice.print(subscriber_type, calls, 01, 2023)
+      assert expect === Subscriber.print_invoice(subscriber_type, calls, 01, 2023)
     end
   end
 end

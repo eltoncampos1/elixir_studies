@@ -1,3 +1,9 @@
+defprotocol Subscriber do
+  @fallback_to_any true
+  def print_invoice(subscriber_type, calls, month, year)
+end
+
+
 defmodule Telephony.Core.Subscriber do
   @moduledoc false
   alias Telephony.Core.{Pospaid, Prepaid}
@@ -30,4 +36,7 @@ defmodule Telephony.Core.Subscriber do
 
   def make_recharge(_subscriber, _value, _date),
     do: {:error, "Only a prepaid can make a recharge"}
+
+
+
 end

@@ -21,8 +21,8 @@ defmodule Telephony.Core.Pospaid do
     %{subscriber | calls: subscriber.calls ++ [call]}
   end
 
-  defimpl Invoice, for: __MODULE__ do
-    def print(_pospaid, calls, month, year) do
+  defimpl Subscriber, for: __MODULE__ do
+    def print_invoice(_pospaid, calls, month, year) do
       calls =
         Enum.reduce(calls, [], fn call, acc ->
           value_spent = call.time_spent * 1.04
