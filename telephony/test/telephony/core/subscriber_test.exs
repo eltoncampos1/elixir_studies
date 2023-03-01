@@ -65,7 +65,7 @@ defmodule Telephony.Core.SubscriberTest do
     date = DateTime.utc_now()
 
     expect = %Subscriber{
-      calls: %Call{date: date, time_spent: 1},
+      calls: [%Call{date: date, time_spent: 1}],
       full_name: "Jhon",
       phone_number: "123",
       type: %Prepaid{credits: 8.55, recharges: []}
@@ -84,7 +84,7 @@ defmodule Telephony.Core.SubscriberTest do
     date = DateTime.utc_now()
 
     expect = %Subscriber{
-      calls: %Call{date: date, time_spent: 1},
+      calls: [%Call{date: date, time_spent: 1}],
       full_name: "Jhon",
       phone_number: "123",
       type: %Pospaid{spent: 1.04}
@@ -107,7 +107,29 @@ defmodule Telephony.Core.SubscriberTest do
     assert Subscriber.make_call(subscriber, 1, date) == expect
   end
 
-  test "make recharge" do
+  test "make prepaid recharge" do
+    subscriber = %Subscriber{
+      full_name: "Jhon",
+      phone_number: "123",
+      type: %Prepaid{credits: 10, recharges: []}
+    }
+
+    date = DateTime.utc_now()
+
+    expect = %Telephony.Core.Subscriber{
+      calls: [],
+      full_name: "Jhon",
+      phone_number: "123",
+      type: %Telephony.Core.Prepaid{
+        credits: 20,
+        recharges: [%Telephony.Core.Recharge{date: date, value: 10}]
+      }
+    }
+
+    assert Subscriber.make_recharge(subscriber, 10, date) == expect
+  end
+
+  test "make pospaid recharge" do
     subscriber = %Subscriber{
       full_name: "Jhon",
       phone_number: "123",
@@ -119,5 +141,28 @@ defmodule Telephony.Core.SubscriberTest do
     expect = {:error, "Only a prepaid can make a recharge"}
 
     assert Subscriber.make_recharge(subscriber, 10, date) == expect
+  end
+
+  test "print invoice" do
+    subscriber = %Subscriber{
+      full_name: "Jhon",
+      phone_number: "123",
+      type: %Prepaid{credits: 10, recharges: []},
+      calls: []
+    }
+
+    date = DateTime.utc_now()
+
+    expect = %{
+      invoice: %{calls: [], credits: 10, recharges: []},
+      subscriber: %Telephony.Core.Subscriber{
+        calls: [],
+        full_name: "Jhon",
+        phone_number: "123",
+        type: %Telephony.Core.Prepaid{credits: 10, recharges: []}
+      }
+    }
+
+    assert Subscriber.print_invoice(subscriber, subscriber.calls, 02, 2023) == expect
   end
 end
