@@ -59,7 +59,7 @@ defmodule Telephony.Core.PospaidTest do
       assert expect === Subscriber.print_invoice(pospaid, calls, 01, 2023)
     end
 
-    test "make a rechage", %{pospaid: sub} do
+    test "make a rechage" do
       pospaid = %Pospaid{spent: 90 * 1.04}
       date = NaiveDateTime.utc_now()
 

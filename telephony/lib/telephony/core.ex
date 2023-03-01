@@ -3,7 +3,7 @@ defmodule Telephony.Core do
   alias __MODULE__.Subscriber
   @allowed_types [:prepaid, :pospaid]
 
-  def create_subscriber(subscribers, %{subscriber_type: type} = payload)
+  def create_subscriber(subscribers, %{type: type} = payload)
       when type in @allowed_types do
     case Enum.find(subscribers, &(&1.phone_number == payload.phone_number)) do
       %__MODULE__.Subscriber{} ->

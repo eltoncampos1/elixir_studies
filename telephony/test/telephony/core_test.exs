@@ -10,14 +10,14 @@ defmodule Telephony.CoreTest do
       %Subscriber{
         full_name: "Jhon",
         phone_number: "123",
-        subscriber_type: %Prepaid{credits: 0, recharges: []}
+        type: %Prepaid{credits: 0, recharges: []}
       }
     ]
 
     payload = %{
       full_name: "Jhon",
       phone_number: "123",
-      subscriber_type: :prepaid
+      type: :prepaid
     }
 
     %{subscribers: subscribers, payload: payload}
@@ -32,7 +32,7 @@ defmodule Telephony.CoreTest do
       %Subscriber{
         full_name: "Jhon",
         phone_number: "123",
-        subscriber_type: %Prepaid{credits: 0, recharges: []}
+        type: %Prepaid{credits: 0, recharges: []}
       }
     ]
 
@@ -43,19 +43,19 @@ defmodule Telephony.CoreTest do
     payload = %{
       full_name: "mary",
       phone_number: "1234",
-      subscriber_type: :prepaid
+      type: :prepaid
     }
 
     expect = [
       %Subscriber{
         full_name: "mary",
         phone_number: "1234",
-        subscriber_type: %Prepaid{credits: 0, recharges: []}
+        type: %Prepaid{credits: 0, recharges: []}
       },
       %Subscriber{
         full_name: "Jhon",
         phone_number: "123",
-        subscriber_type: %Prepaid{credits: 0, recharges: []}
+        type: %Prepaid{credits: 0, recharges: []}
       }
     ]
 
@@ -77,7 +77,7 @@ defmodule Telephony.CoreTest do
   } do
     payload = %{
       full_name: "user",
-      subscriber_type: :invalid_type,
+      type: :invalid_type,
       phone_number: "8549"
     }
 

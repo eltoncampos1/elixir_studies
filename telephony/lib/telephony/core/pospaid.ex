@@ -16,8 +16,8 @@ defmodule Telephony.Core.Pospaid do
       }
     end
 
-    def make_call(subscriber_type, time_spent, date) do
-      subscriber_type
+    def make_call(type, time_spent, date) do
+      type
       |> update_spent(time_spent)
       |> add_call(time_spent, date)
     end
@@ -37,14 +37,14 @@ defmodule Telephony.Core.Pospaid do
       end
     end
 
-    defp update_spent(subscriber_type, time_spent) do
+    defp update_spent(type, time_spent) do
       spent = @price_per_minute * time_spent
-      %{subscriber_type | spent: subscriber_type.spent + spent}
+      %{type | spent: type.spent + spent}
     end
 
-    defp add_call(subscriber_type, time_spent, date) do
+    defp add_call(type, time_spent, date) do
       call = Call.new(time_spent, date)
-      {subscriber_type, call}
+      {type, call}
     end
   end
 end
