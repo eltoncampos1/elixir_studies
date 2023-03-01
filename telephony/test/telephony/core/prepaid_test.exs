@@ -65,7 +65,7 @@ defmodule Telephony.Core.PrepaidTest do
       assert expect == result
     end
 
-    test "print invoice", %{subscriber: sub} do
+    test "print invoice" do
       value = 100
       date = ~D[2023-02-16]
       last_month = ~D[2023-01-16]

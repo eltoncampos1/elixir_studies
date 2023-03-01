@@ -1,8 +1,8 @@
 defprotocol Subscriber do
   @fallback_to_any true
   def print_invoice(subscriber_type, calls, month, year)
+  def make_call(subscriber_type, time_spent, date)
 end
-
 
 defmodule Telephony.Core.Subscriber do
   @moduledoc false
@@ -21,7 +21,7 @@ defmodule Telephony.Core.Subscriber do
 
   def make_call(%{subscriber_type: subscriber_type} = subscriber, time_spent, date)
       when subscriber_type.__struct__ == Pospaid do
-    Pospaid.make_call(subscriber, time_spent, date)
+    Subscriber.make_call(subscriber.subscriber_type, time_spent, date)
   end
 
   def make_call(%{subscriber_type: subscriber_type} = subscriber, time_spent, date)
@@ -36,7 +36,4 @@ defmodule Telephony.Core.Subscriber do
 
   def make_recharge(_subscriber, _value, _date),
     do: {:error, "Only a prepaid can make a recharge"}
-
-
-
 end

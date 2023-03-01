@@ -60,17 +60,7 @@ defmodule Telephony.Core.SubscriberTest do
 
     result = Subscriber.make_call(pospaid, 2, date)
 
-    expect = %Subscriber{
-      full_name: "Jhon",
-      phone_number: "123",
-      subscriber_type: %Pospaid{spent: 2.08},
-      calls: [
-        %Call{
-          time_spent: 2,
-          date: date
-        }
-      ]
-    }
+    expect = {%Pospaid{spent: 2.08}, %Call{date: date, time_spent: 2}}
 
     assert expect == result
   end
