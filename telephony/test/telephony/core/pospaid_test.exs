@@ -58,5 +58,13 @@ defmodule Telephony.Core.PospaidTest do
 
       assert expect === Subscriber.print_invoice(pospaid, calls, 01, 2023)
     end
+
+    test "make a rechage", %{pospaid: sub} do
+      pospaid = %Pospaid{spent: 90 * 1.04}
+      date = NaiveDateTime.utc_now()
+
+      assert {:error, "Only a prepaid can make a recharge"} ==
+               Subscriber.make_recharge(pospaid, 10, date)
+    end
   end
 end

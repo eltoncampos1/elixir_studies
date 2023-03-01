@@ -54,6 +54,4 @@ defmodule Telephony.Core.SubscriberTest do
 
     assert expect == result
   end
-
-
 end

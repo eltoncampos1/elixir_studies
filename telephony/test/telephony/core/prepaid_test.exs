@@ -4,7 +4,7 @@ defmodule Telephony.Core.PrepaidTest do
   alias Telephony.Core.{Call, Prepaid, Recharge}
 
   setup do
-    prepaid =  %Prepaid{credits: 10, recharges: []}
+    prepaid = %Prepaid{credits: 10, recharges: []}
 
     sub_without_credits = %Prepaid{credits: 0, recharges: []}
 

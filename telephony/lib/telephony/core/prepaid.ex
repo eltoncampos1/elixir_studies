@@ -3,8 +3,6 @@ defmodule Telephony.Core.Prepaid do
   alias Telephony.Core.{Call, Recharge}
   defstruct credits: 0, recharges: []
 
-
-
   defimpl Subscriber, for: Telephony.Core.Prepaid do
     @price_per_minute 1.45
 
@@ -44,12 +42,11 @@ defmodule Telephony.Core.Prepaid do
     def make_recharge(subscriber_type, value, date) do
       recharge = Recharge.new(value, date)
 
-       %{
+      %{
         subscriber_type
         | recharges: subscriber_type.recharges ++ [recharge],
           credits: subscriber_type.credits + value
       }
-
     end
 
     defp subscriber_has_credits?(subscriber_type, time_spent) do
@@ -58,7 +55,7 @@ defmodule Telephony.Core.Prepaid do
 
     defp update_credit_spent(subscriber_type, time_spent) do
       credit_spent = @price_per_minute * time_spent
-     %{subscriber_type | credits: subscriber_type.credits - credit_spent}
+      %{subscriber_type | credits: subscriber_type.credits - credit_spent}
     end
 
     defp add_new_call(subscriber_type, time_spent, date) do

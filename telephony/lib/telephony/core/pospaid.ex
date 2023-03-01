@@ -23,17 +23,18 @@ defmodule Telephony.Core.Pospaid do
     end
 
     def make_recharge(_subscriber, _value, _date),
-    do: {:error, "Only a prepaid can make a recharge"}
+      do: {:error, "Only a prepaid can make a recharge"}
 
     defp filter_calls(call, acc, month, year) do
       value_spent = call.time_spent * @price_per_minute
-        if call.date.year == year and call.date.month == month do
-          call = %{date: call.date, time_spent: call.time_spent, value_spent: value_spent}
 
-          acc ++ [call]
-        else
-          acc
-        end
+      if call.date.year == year and call.date.month == month do
+        call = %{date: call.date, time_spent: call.time_spent, value_spent: value_spent}
+
+        acc ++ [call]
+      else
+        acc
+      end
     end
 
     defp update_spent(subscriber_type, time_spent) do
