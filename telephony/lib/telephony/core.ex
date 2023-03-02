@@ -43,4 +43,35 @@ defmodule Telephony.Core do
   def update_subscriber(subscribers, subscriber) do
     {subscribers ++ [subscriber], subscriber}
   end
+
+  def make_call(subscribers, phone_number, time_spent, date) do
+    subscribers
+    |> search_subscriber(phone_number)
+    |> then(fn subscriber ->
+      if is_nil(subscriber) do
+        subscribers
+      else
+        subscribers = List.delete(subscribers, subscriber)
+        result = Subscriber.make_call(subscriber, time_spent, date)
+        update_subscriber(subscribers, result)
+      end
+    end)
+  end
+
+  def print_invoice(subscribers, phone_number, month, year) do
+    subscribers
+    |> search_subscriber(phone_number)
+    |> then(fn subscriber ->
+      if is_nil(subscriber) do
+        subscribers
+      else
+        Subscriber.print_invoice(subscriber, subscriber.calls, month, year)
+      end
+    end)
+  end
+
+  def print_invoices(subscribers, month, year) do
+    subscribers
+    |> Enum.map(&Subscriber.print_invoice(&1, &1.calls, year, month))
+  end
 end
