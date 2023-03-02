@@ -23,17 +23,13 @@ defmodule Telephony.Core do
   end
 
   def make_recharge(subscribers, phone_number, value, date) do
-    subscribers
-    |> search_subscriber(phone_number)
-    |> then(fn subscriber ->
-      if is_nil(subscriber) do
-        subscribers
-      else
-        subscribers = List.delete(subscribers, subscriber)
-        result = Subscriber.make_recharge(subscriber, value, date)
-        update_subscriber(subscribers, result)
-      end
-    end)
+    perform = fn subscriber ->
+      subscribers = List.delete(subscribers, subscriber)
+      result = Subscriber.make_recharge(subscriber, value, date)
+      update_subscriber(subscribers, result)
+    end
+
+    execute_operation(subscribers, phone_number, perform)
   end
 
   def update_subscriber(subscribers, {:error, _message} = err) do
@@ -45,33 +41,34 @@ defmodule Telephony.Core do
   end
 
   def make_call(subscribers, phone_number, time_spent, date) do
-    subscribers
-    |> search_subscriber(phone_number)
-    |> then(fn subscriber ->
-      if is_nil(subscriber) do
-        subscribers
-      else
-        subscribers = List.delete(subscribers, subscriber)
-        result = Subscriber.make_call(subscriber, time_spent, date)
-        update_subscriber(subscribers, result)
-      end
-    end)
+    perform = fn subscriber ->
+      subscribers = List.delete(subscribers, subscriber)
+      result = Subscriber.make_call(subscriber, time_spent, date)
+      update_subscriber(subscribers, result)
+    end
+
+    execute_operation(subscribers, phone_number, perform)
   end
 
   def print_invoice(subscribers, phone_number, month, year) do
-    subscribers
-    |> search_subscriber(phone_number)
-    |> then(fn subscriber ->
-      if is_nil(subscriber) do
-        subscribers
-      else
-        Subscriber.print_invoice(subscriber, subscriber.calls, month, year)
-      end
-    end)
+    perform = &Subscriber.print_invoice(&1, &1.calls, month, year)
+    execute_operation(subscribers, phone_number, perform)
   end
 
   def print_invoices(subscribers, month, year) do
     subscribers
     |> Enum.map(&Subscriber.print_invoice(&1, &1.calls, year, month))
+  end
+
+  defp execute_operation(subscribers, phone_number, func) do
+    subscribers
+    |> search_subscriber(phone_number)
+    |> then(fn subscriber ->
+      if is_nil(subscriber) do
+        subscribers
+      else
+        func.(subscriber)
+      end
+    end)
   end
 end
