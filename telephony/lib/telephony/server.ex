@@ -24,10 +24,17 @@ defmodule Telephony.Server do
     {:reply, subscriber, subscribers}
   end
 
+  def handle_call({:make_call, phone_number, time_spent, date}, _from, subscribers) do
+    case Core.make_call(subscribers, phone_number, time_spent, date) do
+      {:error, _} = err -> {:reply, err, subscribers}
+      {subscribers, subscriber} -> {:reply, subscriber, subscribers}
+    end
+  end
+
   def handle_cast({:make_recharge, phone_number, value, date}, subscribers) do
     case Core.make_recharge(subscribers, phone_number, value, date) do
-      {:error, _} ->  {:noreply, subscribers}
-      {subscribers, _} ->  {:noreply, subscribers}
+      {:error, _} -> {:noreply, subscribers}
+      {subscribers, _} -> {:noreply, subscribers}
     end
   end
 end
