@@ -151,15 +151,13 @@ defmodule Telephony.Core.SubscriberTest do
       calls: []
     }
 
-    date = DateTime.utc_now()
-
     expect = %{
       invoice: %{calls: [], credits: 10, recharges: []},
-      subscriber: %Telephony.Core.Subscriber{
+      subscriber: %Subscriber{
         calls: [],
         full_name: "Jhon",
         phone_number: "123",
-        type: %Telephony.Core.Prepaid{credits: 10, recharges: []}
+        type: %Prepaid{credits: 10, recharges: []}
       }
     }
 

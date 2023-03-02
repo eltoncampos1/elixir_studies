@@ -173,4 +173,67 @@ defmodule Telephony.CoreTest do
     assert expect == result
   end
 
+  test "make a call", %{subscribers: subscribers} do
+    date = Date.utc_today()
+
+    expect =
+      {[
+         %Subscriber{
+           calls: [],
+           full_name: "Jhon",
+           phone_number: "12345",
+           type: %Pospaid{spent: 2.08}
+         }
+       ], {:error, "subscriber does not have credits"}}
+
+    result = Core.make_call(subscribers, "123", 1, date)
+
+    assert result == expect
+  end
+
+  test "print invoice", %{subscribers: subscribers} do
+    date = Date.utc_today()
+
+    expect = %{
+      invoice: %{calls: [], credits: 0, recharges: []},
+      subscriber: %Subscriber{
+        calls: [],
+        full_name: "Jhon",
+        phone_number: "123",
+        type: %Prepaid{credits: 0, recharges: []}
+      }
+    }
+
+    result = Core.print_invoice(subscribers, "123", date.month, date.year)
+
+    assert result == expect
+  end
+
+  test "print all invoices", %{subscribers: subscribers} do
+    date = Date.utc_today()
+    result = Core.print_invoices(subscribers, date.month, date.year)
+
+    expect = [
+      %{
+        invoice: %{calls: [], credits: 0, recharges: []},
+        subscriber: %Subscriber{
+          calls: [],
+          full_name: "Jhon",
+          phone_number: "123",
+          type: %Prepaid{credits: 0, recharges: []}
+        }
+      },
+      %{
+        invoice: %{calls: [], value_spent: 0},
+        subscriber: %Subscriber{
+          calls: [],
+          full_name: "Jhon",
+          phone_number: "12345",
+          type: %Pospaid{spent: 2.08}
+        }
+      }
+    ]
+
+    assert result == expect
+  end
 end
