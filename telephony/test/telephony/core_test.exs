@@ -2,8 +2,7 @@ defmodule Telephony.CoreTest do
   @moduledoc false
   use ExUnit.Case
   alias Telephony.Core
-  alias Telephony.Core.Subscriber
-  alias Telephony.Core.Prepaid
+  alias Telephony.Core.{Prepaid, Pospaid, Subscriber}
 
   setup do
     subscribers = [
@@ -11,6 +10,11 @@ defmodule Telephony.CoreTest do
         full_name: "Jhon",
         phone_number: "123",
         type: %Prepaid{credits: 0, recharges: []}
+      },
+      %Subscriber{
+        full_name: "Jhon",
+        phone_number: "12345",
+        type: %Pospaid{spent: 2.08}
       }
     ]
 
@@ -56,6 +60,12 @@ defmodule Telephony.CoreTest do
         full_name: "Jhon",
         phone_number: "123",
         type: %Prepaid{credits: 0, recharges: []}
+      },
+      %Subscriber{
+        calls: [],
+        full_name: "Jhon",
+        phone_number: "12345",
+        type: %Telephony.Core.Pospaid{spent: 2.08}
       }
     ]
 
@@ -85,8 +95,7 @@ defmodule Telephony.CoreTest do
              Core.create_subscriber(subscribers, payload)
   end
 
-  test "search a subscriber",%{subscribers: subscribers} do
-
+  test "search a subscriber", %{subscribers: subscribers} do
     expect = %Subscriber{
       full_name: "Jhon",
       phone_number: "123",
@@ -103,4 +112,65 @@ defmodule Telephony.CoreTest do
     result = Core.search_subscriber(subscribers, "321")
     assert expect == result
   end
+
+  test "make prepaid recharge", %{subscribers: subscribers} do
+    date = Date.utc_today()
+
+    expect = {
+      [
+        %Telephony.Core.Subscriber{
+          calls: [],
+          full_name: "Jhon",
+          phone_number: "12345",
+          type: %Telephony.Core.Pospaid{spent: 2.08}
+        },
+        %Telephony.Core.Subscriber{
+          calls: [],
+          full_name: "Jhon",
+          phone_number: "123",
+          type: %Telephony.Core.Prepaid{
+            credits: 1,
+            recharges: [%Telephony.Core.Recharge{date: date, value: 1}]
+          }
+        }
+      ],
+      %Telephony.Core.Subscriber{
+        calls: [],
+        full_name: "Jhon",
+        phone_number: "123",
+        type: %Telephony.Core.Prepaid{
+          credits: 1,
+          recharges: [
+            %Telephony.Core.Recharge{
+              date: date,
+              value: 1
+            }
+          ]
+        }
+      }
+    }
+
+    result = Core.make_recharge(subscribers, "123", 1, date)
+    assert expect == result
+  end
+
+  test "make pospaid recharge", %{subscribers: subscribers} do
+    date = Date.utc_today()
+
+    expect = {
+      [
+        %Subscriber{
+          calls: [],
+          full_name: "Jhon",
+          phone_number: "123",
+          type: %Prepaid{credits: 0, recharges: []}
+        }
+      ],
+      {:error, "Only a prepaid can make a recharge"}
+    }
+
+    result = Core.make_recharge(subscribers, "12345", 1, date)
+    assert expect == result
+  end
+
 end
