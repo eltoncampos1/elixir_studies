@@ -23,7 +23,6 @@ defmodule Telephony.ServerTest do
   end
 
   test "create a subscriber", %{pid: pid, process_name: process_name, payload: payload} do
-
     old_state = :sys.get_state(pid)
     assert [] == old_state
     result = GenServer.call(process_name, {:create_subscriber, payload})
@@ -38,10 +37,14 @@ defmodule Telephony.ServerTest do
            ] ==
              result
 
-             refute old_state == result
+    refute old_state == result
   end
 
-  test "error message when try to create a subscriber", %{pid: pid, process_name: process_name, payload: payload} do
+  test "error message when try to create a subscriber", %{
+    pid: pid,
+    process_name: process_name,
+    payload: payload
+  } do
     old_state = :sys.get_state(pid)
     assert [] == old_state
     GenServer.call(process_name, {:create_subscriber, payload})
@@ -50,22 +53,44 @@ defmodule Telephony.ServerTest do
   end
 
   test "search subscriber", %{process_name: process_name, payload: payload} do
-   GenServer.call(process_name, {:create_subscriber, payload})
+    GenServer.call(process_name, {:create_subscriber, payload})
     result = GenServer.call(process_name, {:search_subscriber, payload.phone_number})
     assert result.phone_number == payload.phone_number
   end
 
   test "make a recharge", %{pid: pid, process_name: process_name, payload: payload} do
     GenServer.call(process_name, {:create_subscriber, payload})
-     date = Date.utc_today()
-     state = :sys.get_state(pid)
-     sub_state = hd(state)
-     assert sub_state.type.recharges == []
+    date = Date.utc_today()
+    state = :sys.get_state(pid)
+    sub_state = hd(state)
+    assert sub_state.type.recharges == []
 
-     :ok = GenServer.cast(process_name, {:make_recharge, payload.phone_number, 10, date})
+    :ok = GenServer.cast(process_name, {:make_recharge, payload.phone_number, 10, date})
 
-     state = :sys.get_state(pid)
-     sub_state = hd(state)
-     refute sub_state.type.recharges == []
-   end
+    state = :sys.get_state(pid)
+    sub_state = hd(state)
+    refute sub_state.type.recharges == []
+  end
+
+  test "make a call", %{pid: pid, process_name: process_name, payload: payload} do
+    date = Date.utc_today()
+
+    GenServer.call(process_name, {:create_subscriber, payload})
+
+    state = :sys.get_state(pid)
+    sub_state = hd(state)
+    assert sub_state.calls == []
+
+    :ok = GenServer.cast(process_name, {:make_recharge, payload.phone_number, 100, date})
+    result = GenServer.call(process_name, {:make_call, payload.phone_number, 10, date})
+    refute result.calls == []
+  end
+
+  test "make an error call", %{process_name: process_name, payload: payload} do
+    date = Date.utc_today()
+    GenServer.call(process_name, {:create_subscriber, payload})
+    result = GenServer.call(process_name, {:make_call, payload.phone_number, 10, date})
+
+    assert result == {:error, "subscriber does not have credits"}
+  end
 end
