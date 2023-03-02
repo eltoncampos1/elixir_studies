@@ -17,4 +17,8 @@ defmodule Telephony.Core do
 
   def create_subscriber(_subscribers, _payload),
     do: {:error, "Only 'prepaid' or ''postpaid' are accepted"}
+
+  def search_subscriber(subscribers, phone_number) do
+    Enum.find(subscribers, &(&1.phone_number == phone_number))
+  end
 end

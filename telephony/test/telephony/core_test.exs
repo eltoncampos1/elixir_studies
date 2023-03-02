@@ -84,4 +84,23 @@ defmodule Telephony.CoreTest do
     assert {:error, "Only 'prepaid' or ''postpaid' are accepted"} =
              Core.create_subscriber(subscribers, payload)
   end
+
+  test "search a subscriber",%{subscribers: subscribers} do
+
+    expect = %Subscriber{
+      full_name: "Jhon",
+      phone_number: "123",
+      type: %Prepaid{credits: 0, recharges: []}
+    }
+
+    result = Core.search_subscriber(subscribers, "123")
+    assert expect == result
+  end
+
+  test "return nil when subscirber does not exist", %{subscribers: subscribers} do
+    expect = nil
+
+    result = Core.search_subscriber(subscribers, "321")
+    assert expect == result
+  end
 end
