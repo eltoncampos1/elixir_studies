@@ -93,7 +93,10 @@ defmodule Telephony.ServerTest do
     GenServer.call(process_name, {:create_subscriber, payload})
     :ok = GenServer.cast(process_name, {:make_recharge, payload.phone_number, 100, date})
     GenServer.call(process_name, {:make_call, payload.phone_number, 10, date})
-    result = GenServer.call(process_name, {:print_invoice, payload.phone_number, date.month, date.year})
+
+    result =
+      GenServer.call(process_name, {:print_invoice, payload.phone_number, date.month, date.year})
+
     assert result.invoice.calls == [%{date: date, time_spent: 10, value_spent: 14.5}]
   end
 end
